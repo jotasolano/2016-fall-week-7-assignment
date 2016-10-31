@@ -63,11 +63,14 @@ d3.queue()
             });
     });
 
+
 //Step 3: implement the enter / exit / update pattern
 function draw(rows){
     var top5 = rows.sort(function(a,b){ return b.count - a.count; }).slice(0,5);
 
     console.table(top5);
+
+
 
     // UPDATE
     var update = plot.selectAll('.country')
@@ -95,9 +98,23 @@ function draw(rows){
 
     enter
         .merge(update)
+        .transition().duration(1000)
         .attr('transform', function(d, i){
             return 'translate('+scaleX(i)+',0)';
         });
+
+    enter
+        .merge(update)
+        .select('rect')
+            .transition().duration(1000)
+            .attr('y', function(d) { return scaleY(d.count); })
+            .attr('height', function(d) { return h - scaleY(d.count); });
+
+    enter
+    .merge(update)
+    .select('text')
+        .transition().duration(1000)
+        .attr('y', function(d) { return scaleY(d.count) - 10; });
 
     update.exit().remove();
 }
